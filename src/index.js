@@ -1,5 +1,5 @@
 import debounce from 'lodash.debounce';
-import modal from 'picoModal';
+import * as basicLightbox from 'basiclightbox';
 import { success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
@@ -82,13 +82,10 @@ function ShowBigImg(e) {
   const target = e.target;
   if (target.hasAttribute('src')) {
     const largeSrc = target.dataset.src;
-    modal({
-      content: `<img class='large-img' src=${largeSrc} alt='A tall image';/>`,
-      overlayStyles: {
-        backgroundColor: '#169',
-        opacity: 0.75,
-      },
-    }).show();
+    const instance = basicLightbox.create(`
+    <img src="${largeSrc}" alt="${target.alt}">
+`);
+    instance.show();
   }
 }
 
