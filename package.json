@@ -3,10 +3,10 @@
   "version": "1.1.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://andriy-lanyk.github.io/goit-js-hw-13-image-finder/",
+  "homepage": "https://andriy-lanyk.github.io/goit-js-hw-13-image-finder-infinityScroll",
   "scripts": {
     "dev": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /goit-js-hw-13-image-finder/"
+    "build": "parcel build src/*.html --public-url /goit-js-hw-13-image-finder-infinityScroll/"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,6 @@
     "sass": "^1.32.8"
   },
   "dependencies": {
-    "basiclightbox": "^5.0.4",
     "handlebars": "^4.7.7",
     "lodash.debounce": "^4.0.8",
     "material-design-icons": "^3.0.1",
