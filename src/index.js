@@ -1,10 +1,8 @@
 import debounce from 'lodash.debounce';
+import modal from 'picoModal';
 import { alert, notice, info, success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
-// import * as basicLightbox from 'basiclightbox';
-// import Swal from 'sweetalert2';
-// import 'sweetalert2/src/sweetalert2.scss';
 import './sass/main.scss';
 import apiObject from './apiService.js';
 import createFormTpl from './tamplete/createForm.hbs';
@@ -17,7 +15,7 @@ document.body.insertAdjacentHTML('afterbegin', createGalleryUlTpl());
 document.body.insertAdjacentHTML('afterbegin', createFormTpl());
 
 const gallery = document.querySelector('.gallery');
-// gallery.addEventListener('click', ShowBigImg);
+gallery.addEventListener('click', ShowBigImg);
 
 const input = document.querySelector('[name="query"]');
 input.addEventListener('input', debounce(getQuery, 500));
@@ -80,20 +78,19 @@ function successNotification() {
   });
 }
 
-// function ShowBigImg(e) {
-//   const target = e.target;
-//   if (target.hasAttribute('src')) {
-//     const largeSrc = target.dataset.src;
-//     Swal.fire({
-//       imageUrl: `${largeSrc}`,
-//       heightAuto: false,
-//       width: '1480px',
-//       imageHeight: '650px',
-//       background: '#c0c0c0',
-//       imageAlt: 'A tall image',
-//     });
-//   }
-// }
+function ShowBigImg(e) {
+  const target = e.target;
+  if (target.hasAttribute('src')) {
+    const largeSrc = target.dataset.src;
+    modal({
+      content: `<img class='large-img' src=${largeSrc} alt='A tall image';/>`,
+      overlayStyles: {
+        backgroundColor: '#169',
+        opacity: 0.75,
+      },
+    }).show();
+  }
+}
 
 function resetGallery() {
   gallery.innerHTML = '';
