@@ -1,6 +1,7 @@
 import debounce from 'lodash.debounce';
+import 'regenerator-runtime/runtime.js';
 import * as basicLightbox from 'basiclightbox';
-import { success, error } from '@pnotify/core';
+import { info, success, error } from '@pnotify/core';
 import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/BrightTheme.css';
 import './sass/main.scss';
@@ -21,7 +22,6 @@ const input = document.querySelector('[name="query"]');
 input.addEventListener('input', debounce(getQuery, 500));
 
 const button = document.querySelector('.button');
-button.addEventListener('click', loadMoreImages);
 
 let query = '';
 let pageNumber = 1;
@@ -34,6 +34,8 @@ function getQuery(e) {
     return;
   }
 
+  notificationAboutLoadImages();
+
   apiObject.getImages(query, pageNumber).then(({ hits }) => {
     if (hits.length === 0) {
       resetGallery();
@@ -41,25 +43,9 @@ function getQuery(e) {
       return;
     }
     gallery.innerHTML = createImagesListTpl(hits);
-    button.classList.remove('hidden');
     pageNumber += 1;
     successNotification();
   });
-}
-
-function loadMoreImages() {
-  if (query) {
-    apiObject.getImages(query, pageNumber).then(({ hits }) => {
-      gallery.insertAdjacentHTML('beforeend', createImagesListTpl(hits));
-      pageNumber += 1;
-      successNotification();
-      let scrollToElement = gallery.children[gallery.children.length - 12];
-      scrollToElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-    });
-  }
 }
 
 function errorNotification() {
@@ -75,6 +61,22 @@ function successNotification() {
     text: 'Images have been loaded successfully',
     maxTextHeight: null,
     delay: 2500,
+  });
+}
+
+function notificationAboutLoadImages() {
+  info({
+    text: 'Images are loaded. Wait a little ...',
+    maxTextHeight: null,
+    delay: 1000,
+  });
+}
+
+function notificationAboutEndedImages() {
+  info({
+    text: 'We don`t have more such type of images. Try another query',
+    maxTextHeight: null,
+    delay: 1000,
   });
 }
 
@@ -94,3 +96,22 @@ function resetGallery() {
   pageNumber = 1;
   button.classList.add('hidden');
 }
+
+const options = {
+  rootMargin: '100px',
+  threshold: 0.01,
+};
+
+const observer = new IntersectionObserver(() => {
+  if (query) {
+    apiObject.getImages(query, pageNumber).then(({ hits }) => {
+      gallery.insertAdjacentHTML('beforeend', createImagesListTpl(hits));
+      pageNumber += 1;
+      if (hits.length < 0) {
+        notificationAboutEndedImages();
+      }
+    });
+  }
+}, options);
+
+observer.observe(button);

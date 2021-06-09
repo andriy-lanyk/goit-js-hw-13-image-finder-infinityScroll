@@ -7,13 +7,16 @@ const URL = `https://pixabay.com/api/`;
 const gallery = document.querySelector('.gallery');
 
 export default {
-  getImages: function (query, pageNumber) {
-    return fetch(
-      `${URL}?image_type=photo&orientation=horizontal&q=${query}&page=${pageNumber}&per_page=12&key=${API_KEY}`,
-    ).then(res => {
-      if (!res.ok) {
+  getImages: async function (query, pageNumber) {
+    try {
+      const receiveData = await fetch(
+        `${URL}?image_type=photo&orientation=horizontal&q=${query}&page=${pageNumber}&per_page=12&key=${API_KEY}`,
+      );
+      return receiveData.json();
+    } catch (err) {
+      if (err) {
         gallery.innerHTML = '';
-        if (res.status === 404) {
+        if (err.status === 404) {
           error({
             text: 'There is no image with such name. Please enter a correct query!',
             width: '420px',
@@ -29,7 +32,6 @@ export default {
           });
         }
       }
-      return res.json();
-    });
+    }
   },
 };
