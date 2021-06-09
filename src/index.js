@@ -39,13 +39,13 @@ function getQuery(e) {
   apiObject.getImages(query, pageNumber).then(({ hits }) => {
     if (hits.length === 0) {
       resetGallery();
-      errorNotification();
+      debounce(errorNotification(), 1000);
       return;
     }
     gallery.innerHTML = createImagesListTpl(hits);
     addLazyLoad();
     pageNumber += 1;
-    successNotification();
+    debounce(successNotification(), 1000);
   });
 }
 
@@ -53,7 +53,7 @@ function errorNotification() {
   error({
     text: 'Please, enter the correct query for a image',
     maxTextHeight: null,
-    delay: 4000,
+    delay: 2000,
   });
 }
 
@@ -61,7 +61,7 @@ function successNotification() {
   success({
     text: 'Images have been loaded successfully',
     maxTextHeight: null,
-    delay: 2500,
+    delay: 2000,
   });
 }
 
