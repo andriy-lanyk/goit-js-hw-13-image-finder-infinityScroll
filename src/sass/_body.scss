@@ -2,3 +2,15 @@ body {
   padding: 20px;
   background-color: #c0c0c0;
 }
+
+@media screen and (min-width: 468px) {
+  body {
+    padding: 10px;
+  }
+}
+
+@media screen and (min-width: 469px) and (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+}
