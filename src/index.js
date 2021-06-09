@@ -43,6 +43,7 @@ function getQuery(e) {
       return;
     }
     gallery.innerHTML = createImagesListTpl(hits);
+    addLazyLoad();
     pageNumber += 1;
     successNotification();
   });
@@ -82,8 +83,8 @@ function notificationAboutEndedImages() {
 
 function ShowBigImg(e) {
   const target = e.target;
-  if (target.hasAttribute('src')) {
-    const largeSrc = target.dataset.src;
+  if (target.hasAttribute('alt')) {
+    const largeSrc = target.dataset.source;
     const instance = basicLightbox.create(`
     <img src="${largeSrc}" alt="${target.alt}">
 `);
@@ -94,7 +95,6 @@ function ShowBigImg(e) {
 function resetGallery() {
   gallery.innerHTML = '';
   pageNumber = 1;
-  button.classList.add('hidden');
 }
 
 const options = {
@@ -106,6 +106,7 @@ const observer = new IntersectionObserver(() => {
   if (query) {
     apiObject.getImages(query, pageNumber).then(({ hits }) => {
       gallery.insertAdjacentHTML('beforeend', createImagesListTpl(hits));
+      addLazyLoad();
       pageNumber += 1;
       if (hits.length < 0) {
         notificationAboutEndedImages();
@@ -115,3 +116,17 @@ const observer = new IntersectionObserver(() => {
 }, options);
 
 observer.observe(button);
+
+// Add Lazyload for pictures
+function addLazyLoad() {
+  if ('loading' in HTMLImageElement.prototype) {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+      img.src = img.dataset.src;
+    });
+  } else {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js';
+    document.body.appendChild(script);
+  }
+}
